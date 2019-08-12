@@ -741,9 +741,20 @@ public class CursorWheelLayout extends ViewGroup {
             throw new IllegalArgumentException("Can not set a null adbapter to CursorWheelLayout!!!");
         }
 
+        View saveView = null;
         if (mWheelAdapter != null) {
             if (mWheelDataSetObserver != null) {
                 mWheelAdapter.unregisterDataSetObserver(mWheelDataSetObserver);
+            }
+
+
+            for (int i = 0; i < getChildCount(); i++) {
+                final View child = getChildAt(i);
+
+                if (child.getId() == R.id.id_wheel_menu_center_item) {
+                    saveView = child;
+                    continue;
+                }
             }
             removeAllViews();
             mWheelDataSetObserver = null;
@@ -752,6 +763,8 @@ public class CursorWheelLayout extends ViewGroup {
         mWheelDataSetObserver = new WheelDataSetObserver();
         mWheelAdapter.registerDataSetObserver(mWheelDataSetObserver);
         addMenuItems();
+        if(saveView!=null)
+            addView(saveView);
     }
 
     private void onDateSetChanged() {
