@@ -44,4 +44,13 @@ public class SimpleImageAdapter extends CursorWheelLayout.CycleWheelAdapter {
         return mMenuItemDatas.get(position);
     }
 
+    @Override
+    public void addItem(Object obj) {
+        mMenuItemDatas.add((ImageData) obj);
+    }
+
+    @Override
+    public void removeItem(int position) {
+        mMenuItemDatas.remove(position);
+    }
 }

@@ -1,6 +1,7 @@
 package github.hellocsl.cursorwheel;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObservable;
@@ -20,6 +21,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -741,30 +745,18 @@ public class CursorWheelLayout extends ViewGroup {
             throw new IllegalArgumentException("Can not set a null adbapter to CursorWheelLayout!!!");
         }
 
-        View saveView = null;
         if (mWheelAdapter != null) {
             if (mWheelDataSetObserver != null) {
                 mWheelAdapter.unregisterDataSetObserver(mWheelDataSetObserver);
             }
-
-
-            for (int i = 0; i < getChildCount(); i++) {
-                final View child = getChildAt(i);
-
-                if (child.getId() == R.id.id_wheel_menu_center_item) {
-                    saveView = child;
-                    continue;
-                }
-            }
-            removeAllViews();
+            removeAllButtons();
             mWheelDataSetObserver = null;
         }
-        mWheelAdapter = adapter;
         mWheelDataSetObserver = new WheelDataSetObserver();
-        mWheelAdapter.registerDataSetObserver(mWheelDataSetObserver);
-        addMenuItems();
-        if(saveView!=null)
-            addView(saveView);
+        adapter.registerDataSetObserver(mWheelDataSetObserver);
+        addMenuItems(adapter);
+        mWheelAdapter = adapter;
+
     }
 
     private void onDateSetChanged() {
@@ -772,8 +764,12 @@ public class CursorWheelLayout extends ViewGroup {
             Log.d(TAG, "onDateSetChanged() called with: " + "");
         }
         mFlingRunnable.stop(false);
-        removeAllViews();
-        addMenuItems();
+
+        removeAllButtons();
+
+        // removeAllViews();
+
+        addMenuItems(mWheelAdapter);
         mStartAngle = mSelectedAngle;
         mSelectedPosition = INVALID_POSITION;
         mTempSelectedPosition = INVALID_POSITION;
@@ -784,19 +780,33 @@ public class CursorWheelLayout extends ViewGroup {
         requestLayout();
     }
 
+    private void removeAllButtons() {
+        List<View> toDelete = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            final View child = getChildAt(i);
+
+            if (child.getId() != R.id.id_wheel_menu_center_item) {
+                toDelete.add(child);
+            }
+        }
+        for (View view : toDelete) {
+            removeView(view);
+        }
+    }
+
 
     /**
      * add menu item to this layout
      */
-    private void addMenuItems() {
-        if (mWheelAdapter == null || mWheelAdapter.getCount() == 0) {
+    private void addMenuItems(CycleWheelAdapter wheelAdapter) {
+        if (wheelAdapter == null || wheelAdapter.getCount() == 0) {
             throw new IllegalArgumentException("Empty menu source!");
         }
-        mMenuItemCount = mWheelAdapter.getCount();
+        mMenuItemCount = wheelAdapter.getCount();
         View view;
         for (int i = 0; i < mMenuItemCount; i++) {
             final int j = i;
-            view = mWheelAdapter.getView(this, i);
+            view = wheelAdapter.getView(this, i);
             //it will be ignore the origin onClickListener
             view.setOnClickListener(new InnerClickListener(i));
             addView(view);
@@ -1202,6 +1212,10 @@ public class CursorWheelLayout extends ViewGroup {
          * @return The data at the specified position.
          */
         public abstract Object getItem(int position);
+
+        public abstract void removeItem(int position);
+
+        public abstract void addItem(Object obj);
     }
 
 }

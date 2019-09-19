@@ -63,4 +63,13 @@ public class SimpleTextAdapter extends CursorWheelLayout.CycleWheelAdapter {
         return mMenuItemDatas.get(position);
     }
 
+    @Override
+    public void addItem(Object obj) {
+        mMenuItemDatas.add((MenuItemData) obj);
+    }
+
+    @Override
+    public void removeItem(int position) {
+        mMenuItemDatas.remove(position);
+    }
 }
