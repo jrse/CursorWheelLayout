@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
+
 android {
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
@@ -19,17 +19,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-annotations:23.2.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-annotations:28.0.0'
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'github.jrse'
+            artifactId = 'CursorWheelLayout'
+            version = '1.1.0.12'
 
-publish {
-    userOrg = 'jrse'
-    groupId = 'github.jrse'
-    artifactId = 'CursorWheelLayout'
-    publishVersion = '1.1.0.11'
-    desc = 'An Android Widget for selecting items that rotate on a wheel'
-    website = 'https://github.com/jrse/CursorWheelLayout'
+        }
+    }
 }
+
