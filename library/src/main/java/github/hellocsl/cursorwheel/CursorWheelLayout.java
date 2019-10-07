@@ -413,9 +413,9 @@ public class CursorWheelLayout extends ViewGroup {
 
         float angleDelay;
         if (getCenterItem() != null) {
-            angleDelay = 360 / (getChildCount() - 1);
+            angleDelay = 360 / ((getChildCount() <=1  ? 2 : getChildCount()) - 1);
         } else {
-            angleDelay = 360 / (getChildCount());
+            angleDelay = 360 / (getChildCount() == 0 ? 1 : getChildCount());
         }
         //angle diff [0,360)
         double minimumAngleDiff = -1;
