@@ -29,7 +29,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'github.jrse'
             artifactId = 'CursorWheelLayout'
-            version = '1.1.0.12'
+            version = '1.1.0.13'
             artifact("$buildDir/outputs/aar/library-release.aar")
         }
     }
